@@ -1,8 +1,8 @@
 <!doctype html>
-<html lang="de">
+<html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>Sicherheitswarnung</title>
+  <title>System Security Log</title>
   <style>
     html, body {
       margin: 0;
@@ -17,72 +17,92 @@
       justify-content: center;
     }
     .wrap {
-      text-align: center;
       max-width: 900px;
+      width: 100%;
       padding: 2rem;
     }
     h1 {
-      font-size: 2.5rem;
+      font-size: 1.5rem;
       margin-bottom: 1rem;
-      color: #f00;
-      text-transform: uppercase;
-      animation: blink 1s step-start infinite;
-    }
-    p {
-      font-size: 1.3rem;
-      margin: 0.75rem 0;
+      color: #0f0;
     }
     .terminal {
       background: #111;
       border: 2px solid #0f0;
       padding: 1rem;
-      margin: 1.5rem 0;
-      text-align: left;
-      max-height: 350px;
+      height: 70vh;
       overflow-y: auto;
-      font-size: 1rem;
+      font-size: 0.95rem;
+      line-height: 1.4;
     }
-    @keyframes blink {
-      50% { opacity: 0; }
+    .warn {
+      color: #f00;
+      font-weight: bold;
     }
   </style>
 </head>
 <body>
   <div class="wrap">
-    <h1>⚠ Unbefugter Zugriff ⚠</h1>
-    <div class="terminal" id="terminal">
-      <p>> Starte Netzwerk-Scan...</p>
-      <p>> Verbindung zu Remote-Host aufgebaut...</p>
-      <p>> Unbekannte Sitzung aktiv...</p>
-    </div>
-    <p style="color:#f00; font-weight:bold; margin-top:1.5rem;">
-      Dein PC wird gerade gehackt!
-    </p>
+    <h1>System Security Log</h1>
+    <div class="terminal" id="terminal"></div>
   </div>
 
   <script>
-    // Fake Terminal-Ausgabe
     const terminal = document.getElementById('terminal');
+
+    // Hilfsfunktionen für Zufallswerte
+    function randomIP() {
+      return Array(4).fill(0).map(() => Math.floor(Math.random() * 255)).join(".");
+    }
+
+    function randomPort() {
+      return Math.floor(Math.random() * 60000) + 1024;
+    }
+
+    function getTimestamp() {
+      const now = new Date();
+      return now.toISOString().replace("T", " ").split(".")[0];
+    }
+
+    // Nachrichten-Template mit Platzhaltern
     const messages = [
-      "> IP-Adresse gefunden: 192.168.1.23",
-      "> Zugriffstoken erhalten...",
-      "> Systemdateien werden kopiert...",
-      "> Webcam wird aktiviert...",
-      "> WARNUNG: Sicherheitsleck bestätigt!",
-      "> ALLE DATEN WERDEN EXFILTRIERT...",
+      "Initializing connection monitor...",
+      "Listening on port {PORT}...",
+      "Incoming request from {IP}...",
+      "Handshake completed.",
+      "Elevation attempt detected.",
+      "Unauthorized access flag set.",
+      "Remote shell opened on {IP_LOCAL}:{PORT}...",
+      "File transfer initiated (config.sys)...",
+      "Camera stream request acknowledged.",
+      "<WARNING> Suspicious activity confirmed.",
+      "Session persistence established.",
+      "-- End of log --"
     ];
+
     let i = 0;
+
     function addMessage() {
       if (i < messages.length) {
+        let msg = messages[i]
+          .replace("{IP}", randomIP())
+          .replace("{PORT}", randomPort())
+          .replace("{IP_LOCAL}", "192.168.1." + Math.floor(Math.random() * 200 + 10));
+
         const p = document.createElement("p");
-        p.textContent = messages[i];
+        p.textContent = `[${getTimestamp()}] ${msg}`;
+        if (msg.includes("WARNING") || msg.includes("Unauthorized")) {
+          p.classList.add("warn");
+        }
         terminal.appendChild(p);
         terminal.scrollTop = terminal.scrollHeight;
         i++;
         setTimeout(addMessage, 1800);
       }
     }
-    setTimeout(addMessage, 2000);
+
+    // Start verzögert nach 1 Sekunde
+    setTimeout(addMessage, 1000);
   </script>
 </body>
 </html>
