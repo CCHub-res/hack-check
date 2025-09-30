@@ -1,19 +1,38 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="de">
 <head>
-  <meta charset="utf-8">
-  <title>Hausaufgaben zuerst</title>
+  <meta charset="UTF-8">
+  <title>System Warning</title>
   <style>
-    body { font-family: Arial, sans-serif; margin: 2rem; }
-    h1 { color: #222; }
-    a { display: inline-block; margin: 0.5rem 0; padding: 0.5rem 1rem; background: #ffd700; color: #000; text-decoration: none; border-radius: 8px; }
-    a:hover { background: #ffa500; }
+    body {
+      background-color: black;
+      color: lime;
+      font-family: monospace;
+      padding: 20px;
+    }
+    .blink {
+      animation: blink 1s step-start infinite;
+      color: red;
+    }
+    @keyframes blink {
+      50% { opacity: 0; }
+    }
+    .terminal {
+      border: 2px solid lime;
+      padding: 20px;
+      background: #111;
+      box-shadow: 0 0 20px lime;
+    }
   </style>
 </head>
 <body>
-  <h1>Hausaufgaben zuerst 📚</h1>
-  <p>Bitte starte hier:</p>
-  <a href="https://www.anton.app/de/" target="_blank">ANTON Lernportal</a><br>
-  <a href="https://de.wikipedia.org/" target="_blank">Wikipedia</a>
+  <div class="terminal">
+    <h1 class="blink">!!! SYSTEM WARNING !!!</h1>
+    <p>Ungewöhnlicher Netzwerkverkehr erkannt...</p>
+    <p>Analysiere IP-Adresse...</p>
+    <p>Zugriff verweigert. <span class="blink">Verdächtige Aktivität!</span></p>
+    <p><br>Starte Sicherheitsprotokoll in 3... 2... 1...</p>
+    <p class="blink">Fehler: Unbekannte Bedrohung – bitte Browser schließen!</p>
+  </div>
 </body>
 </html>
