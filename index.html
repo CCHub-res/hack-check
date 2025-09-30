@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="de">
 <head>
   <meta charset="utf-8">
   <title>System Security Log</title>
@@ -34,6 +34,7 @@
       overflow-y: auto;
       font-size: 0.95rem;
       line-height: 1.4;
+      white-space: pre-wrap;
     }
     .warn {
       color: #f00;
@@ -50,21 +51,28 @@
   <script>
     const terminal = document.getElementById('terminal');
 
-    // Hilfsfunktionen für Zufallswerte
+    // Zufallsfunktionen
     function randomIP() {
       return Array(4).fill(0).map(() => Math.floor(Math.random() * 255)).join(".");
     }
-
     function randomPort() {
       return Math.floor(Math.random() * 60000) + 1024;
     }
 
+    // Deutsche Zeit mit Datum
     function getTimestamp() {
       const now = new Date();
-      return now.toISOString().replace("T", " ").split(".")[0];
+      return now.toLocaleString("de-DE", {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit"
+      });
     }
 
-    // Nachrichten-Template mit Platzhaltern
+    // Nachrichten-Template
     const messages = [
       "Initializing connection monitor...",
       "Listening on port {PORT}...",
@@ -82,6 +90,25 @@
 
     let i = 0;
 
+    // Tippeffekt
+    function typeMessage(text, isWarn, callback) {
+      const p = document.createElement("p");
+      terminal.appendChild(p);
+      let idx = 0;
+      function typeChar() {
+        if (idx < text.length) {
+          p.textContent += text[idx];
+          idx++;
+          terminal.scrollTop = terminal.scrollHeight;
+          setTimeout(typeChar, 30); // Schreibgeschwindigkeit (ms pro Zeichen)
+        } else {
+          if (isWarn) p.classList.add("warn");
+          if (callback) setTimeout(callback, 1200); // Pause vor nächster Zeile
+        }
+      }
+      typeChar();
+    }
+
     function addMessage() {
       if (i < messages.length) {
         let msg = messages[i]
@@ -89,19 +116,15 @@
           .replace("{PORT}", randomPort())
           .replace("{IP_LOCAL}", "192.168.1." + Math.floor(Math.random() * 200 + 10));
 
-        const p = document.createElement("p");
-        p.textContent = `[${getTimestamp()}] ${msg}`;
-        if (msg.includes("WARNING") || msg.includes("Unauthorized")) {
-          p.classList.add("warn");
-        }
-        terminal.appendChild(p);
-        terminal.scrollTop = terminal.scrollHeight;
+        const line = `[${getTimestamp()}] ${msg}`;
+        const isWarn = msg.includes("WARNING") || msg.includes("Unauthorized");
+
+        typeMessage(line, isWarn, addMessage);
         i++;
-        setTimeout(addMessage, 1800);
       }
     }
 
-    // Start verzögert nach 1 Sekunde
+    // Start nach 1 Sekunde
     setTimeout(addMessage, 1000);
   </script>
 </body>
